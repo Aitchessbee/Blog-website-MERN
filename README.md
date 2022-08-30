@@ -1,2 +1,2 @@
-# Blog-website-MERN-
+# Blog-website-MERN
 Basic MERN website
