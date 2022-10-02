@@ -29,13 +29,14 @@ function App(){
 
 
     const addBlog = async (e) => {
-        console.log(e.type)
+        console.log(e.type + " add")
         e.preventDefault()
         let res = await axios.post("http://127.0.0.1:8000/add-blog", {"blog": blog})
         setAllBlogs((prevData) => ([...prevData, res.data]))
     }
 
     const clearBlogs = async (e) => {
+        console.log(e.type + " clear")
         e.preventDefault()
         setAllBlogs([])
         let resp = await axios.post("http://127.0.0.1:8000/clear-blogs")
@@ -61,8 +62,8 @@ function App(){
 
     return (
         <div>
-            <form onClick={addBlog}>
-                {/* <textarea   
+            <form onSubmit={addBlog}>
+                <textarea   
                     name="blogInput" 
                     cols="30" 
                     rows="10"
@@ -70,7 +71,7 @@ function App(){
                     value={blog}
                 >
 
-                </textarea> */}
+                </textarea>
 
                 <input 
                     type="text" 

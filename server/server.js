@@ -2,6 +2,7 @@ const express = require("express")
 const mongoose = require("mongoose")
 const cors = require('cors');
 const Blog = require("./models/blogModel");
+const dotenv = require("dotenv").config();
 const { request } = require("https");
 
 const PORT = 8000
@@ -12,7 +13,7 @@ app.use(express.json());
 
 app.use(cors());
 
-dbURI = "mongodb+srv://HSB:test1234@cluster0.7ztm4s7.mongodb.net/Blogs?retryWrites=true&w=majority"
+dbURI = process.env.MONGODB_URI
 mongoose.connect(dbURI, {useNewUrlParser: true, useUnifiedTopology: true})
     .then(console.log("DB connection successful"))
 
