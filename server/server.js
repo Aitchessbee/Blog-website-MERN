@@ -2,6 +2,7 @@ const express = require("express")
 const mongoose = require("mongoose")
 const cors = require('cors');
 const Blog = require("./models/blogModel");
+const { request } = require("https");
 
 const PORT = 8000
 
@@ -34,7 +35,7 @@ app.get("/blogs", (req, res)=> {
 
 
 
-app.post("/add-blog", (req, res) => {
+app.post("/add-blog", async (req, res) => {
     console.log(req.body)
 
     // const blog = new Blog(res.body)
@@ -46,15 +47,34 @@ app.post("/add-blog", (req, res) => {
     //         console.log(err)
     //     })
 
-    Blog.create(req.body)
+    let blog = await Blog.create(req.body)
+    console.log(blog._id)
 
-    res.send("blog added")
+    res.json(blog)
     
 })
 
+app.post("/clear-blogs", async (req, res) => {
+    console.log("clearing")
+
+    // let blogs = await Blog.find()
 
 
+    // Blog.remove(blogs[-1])
 
+    await Blog.deleteMany({})
+
+    res.send("Clearing")
+})
+
+app.delete("/delete-blog/:id", async (req, res) => {
+    // console.log(req.params.id)
+
+    let blog = await Blog.findOne({_id: req.params.id})
+    blog.remove()
+
+    res.json({id: req.params.id})
+})
 
 
 

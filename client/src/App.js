@@ -9,9 +9,10 @@ function App(){
     function getBlogs(){
         axios.get("http://127.0.0.1:8000/blogs")
             .then((res) => {
+                // console.log(res.data)
                 setAllBlogs(res.data)
-                console.log(allBlogs)
             })
+            .then(console.log(allBlogs))
     }
 
     
@@ -27,31 +28,61 @@ function App(){
     }
 
 
-    function addBlog(e){
+    const addBlog = async (e) => {
+        console.log(e.type)
         e.preventDefault()
-        axios.post("http://127.0.0.1:8000/add-blog", {"blog": blog})
-            .then(getBlogs())
-            // .then(console.log(blogElements))
-            // .then(res => console.log(res))
+        let res = await axios.post("http://127.0.0.1:8000/add-blog", {"blog": blog})
+        setAllBlogs((prevData) => ([...prevData, res.data]))
     }
 
-    const blogElements = allBlogs.map((elem) => {
-        return (<div style={{backgroundColor: "red", width: "200px", height: "200px", margin: "20px", color: "white", display: "flex", alignItems: "center", justifyContent: "center"}} key={elem._id}>{elem.blog}</div>)
+    const clearBlogs = async (e) => {
+        e.preventDefault()
+        setAllBlogs([])
+        let resp = await axios.post("http://127.0.0.1:8000/clear-blogs")
+        console.log(resp.data)
+    }
+
+    const deleteBlog = async (e, id) => {
+        e.preventDefault()
+        let resp = await axios.delete(`http://127.0.0.1:8000/delete-blog/${id}`)
+        getBlogs()
+        console.log(resp.data)
+    }
+
+    const blogElements = allBlogs.map((elem, index) => {
+        // console.log(elem)
+        return (
+            <div key={elem._id}>
+                <div style={{backgroundColor: "red", width: "200px", height: "200px", margin: "20px", color: "white", display: "flex", alignItems: "center", justifyContent: "center"}}>{elem.blog}</div>
+                <button onClick={event => (deleteBlog(event, elem._id))}>Delete</button>
+            </div>
+        )
     })
 
     return (
         <div>
-            <textarea   
-                name="blogInput" 
-                cols="30" 
-                rows="10"
-                onChange={changed}
-                value={blog}
-            >
+            <form onClick={addBlog}>
+                {/* <textarea   
+                    name="blogInput" 
+                    cols="30" 
+                    rows="10"
+                    onChange={changed}  
+                    value={blog}
+                >
 
-            </textarea>
+                </textarea> */}
 
-            <button onClick={addBlog} style={{display: "block"}}>Add Blog</button>
+                <input 
+                    type="text" 
+                    onChange={changed}
+                    value={blog}
+                />
+                <button onClick={clearBlogs} style={{display: "block"}}>Clear Blogs</button>
+                <button onClick={addBlog} style={{display: "block"}}>Add Blog</button>
+            </form>
+
+
+            
 
             <div>
                 {blogElements}
